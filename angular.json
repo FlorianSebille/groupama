@@ -3,5 +3,94 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "Gestion_Comptes_Rendus_Activite": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/gestion-comptes-rendus-activite",
+      "sourceRoot": "projects/gestion-comptes-rendus-activite/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/gestion-comptes-rendus-activite",
+            "index": "projects/gestion-comptes-rendus-activite/src/index.html",
+            "browser": "projects/gestion-comptes-rendus-activite/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/gestion-comptes-rendus-activite/tsconfig.app.json",
+            "assets": [
+              "projects/gestion-comptes-rendus-activite/src/favicon.ico",
+              "projects/gestion-comptes-rendus-activite/src/assets"
+            ],
+            "styles": [
+              "projects/gestion-comptes-rendus-activite/src/custom-theme.scss",
+              "projects/gestion-comptes-rendus-activite/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "Gestion_Comptes_Rendus_Activite:build:production"
+            },
+            "development": {
+              "buildTarget": "Gestion_Comptes_Rendus_Activite:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "Gestion_Comptes_Rendus_Activite:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/gestion-comptes-rendus-activite/tsconfig.spec.json",
+            "assets": [
+              "projects/gestion-comptes-rendus-activite/src/favicon.ico",
+              "projects/gestion-comptes-rendus-activite/src/assets"
+            ],
+            "styles": [
+              "projects/gestion-comptes-rendus-activite/src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
   }
 }
