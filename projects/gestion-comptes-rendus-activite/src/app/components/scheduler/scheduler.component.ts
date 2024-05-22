@@ -1,6 +1,11 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { DayPilot, DayPilotSchedulerComponent } from 'daypilot-pro-angular';
-import { DataService } from './data.service';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { UserListModule } from '../../stores/actions/user-list.action';
+import { AppState } from '../../stores';
+import { User, UsersListState } from '../../models/users.model';
+import { selectUsers$ } from '../../stores/selectors/user-list.selector';
 
 @Component({
   selector: 'scheduler-component',
@@ -10,7 +15,7 @@ import { DataService } from './data.service';
   ></daypilot-scheduler>`,
   styles: [``],
 })
-export class SchedulerComponent implements AfterViewInit {
+export class SchedulerComponent implements AfterViewInit, OnInit {
   @ViewChild('scheduler', { static: false })
   scheduler!: DayPilotSchedulerComponent;
 
@@ -27,15 +32,20 @@ export class SchedulerComponent implements AfterViewInit {
         if (!modal.result) {
           return;
         }
-        dp.events.add(
-          new DayPilot.Event({
-            start: args.start,
-            end: args.end,
-            id: DayPilot.guid(),
-            resource: args.resource,
-            text: modal.result,
-          })
-        );
+
+        console.log(dp);
+        console.log(dp.events);
+        console.log(DayPilot.guid());
+
+        const newEvent = new DayPilot.Event({
+          start: args.start,
+          end: args.end,
+          id: DayPilot.guid(),
+          resource: args.resource,
+          text: modal.result,
+        });
+
+        dp.events.add(newEvent);
       });
     },
     dynamicLoading: true,
@@ -52,24 +62,32 @@ export class SchedulerComponent implements AfterViewInit {
       const from = args.viewport.start.addMonths(-1);
       const to = args.viewport.end.addMonths(1);
 
-      this.ds.getEvents(from, to).subscribe((result) => {
-        args.events = result;
+      this.users$.subscribe((result) => {
+        args.events = result ? result.events : [];
         args.loaded();
       });
     },
     treeEnabled: true,
   };
 
-  constructor(private ds: DataService) {}
+  users$: Observable<User | null>;
+
+  constructor(private store: Store<AppState>) {
+    this.users$ = store.pipe(select(selectUsers$));
+  }
 
   ngAfterViewInit(): void {
-    this.ds
-      .getResources()
-      .subscribe((result) => (this.config.resources = result));
+    this.users$.subscribe(
+      (result) => (this.config.resources = result ? result.ressources : [])
+    );
 
     // use scrollTo method instead of config.startDate
     // if not called, it will display the current date
 
     // this.scheduler.control.scrollTo("2021-06-12");
+  }
+
+  ngOnInit() {
+    this.store.dispatch(new UserListModule.InitUsers());
   }
 }
