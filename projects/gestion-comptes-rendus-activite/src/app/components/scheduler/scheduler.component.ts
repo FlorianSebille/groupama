@@ -12,7 +12,7 @@ import { AppState } from '../../stores/store';
 import {
   addEvent,
   addRessource,
-  load,
+  loadUsers,
   updateEvent,
   updateRessource,
 } from '../../stores/actions';
@@ -56,8 +56,6 @@ export class SchedulerComponent implements AfterViewInit {
       if (modal.canceled) {
         return;
       }
-
-      console.log(this.store.select((state) => state.users.events));
 
       this.addEventFunction({
         start: args.start,
@@ -143,12 +141,9 @@ export class SchedulerComponent implements AfterViewInit {
     private cdRef: ChangeDetectorRef
   ) {
     this.events$ = [];
-    this.load();
+    this.store.dispatch(loadUsers());
 
     this.isLoading$ = this.store.select((state) => state.users.loading);
-
-    console.log('constructor');
-    console.log(this.events$);
   }
 
   async editEvent(e: DayPilot.Event): Promise<void> {
@@ -164,10 +159,6 @@ export class SchedulerComponent implements AfterViewInit {
     this.scheduler.control.events.update(updated);
   }
 
-  load() {
-    this.store.dispatch(load());
-  }
-
   addRessourceFunction(name: string, id: string, capacity: number) {
     const ressource: DayPilot.ResourceData = {
       name: name,
@@ -178,6 +169,8 @@ export class SchedulerComponent implements AfterViewInit {
   }
   addEventFunction(event: DayPilot.EventData) {
     this.store.dispatch(addEvent({ event: event }));
+
+    this.store.select(selectEvents$).forEach((elem) => console.log(elem));
   }
   completeRessources(ressource: DayPilot.ResourceData) {
     this.store.dispatch(
@@ -189,31 +182,14 @@ export class SchedulerComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.store
-      .select(selectEvents$)
-      .subscribe((result) => (this.events$ = result));
-    this.store
-      .select(selectRessources$)
-      .subscribe((result) => (this.config.resources = result));
-
-    console.log('test');
-    console.log(
-      this.store.select(selectRessources$).forEach((elem) => console.log(elem))
-    );
-    console.log(
-      this.store.select(selectEvents$).forEach((elem) => console.log(elem))
-    );
-
-    console.log('ngAfterViewInit');
-    console.log(this.events$);
+    this.store.select(selectEvents$).subscribe((result) => {
+      this.events$ = result;
+      console.log('events : ', result);
+    });
+    this.store.select(selectRessources$).subscribe((result) => {
+      this.config.resources = result;
+      console.log('ressources : ', result);
+    });
     this.cdRef.detectChanges();
-    console.log('ngAfterViewInit');
-    console.log(this.scheduler.control.events);
-    console.log(this.scheduler.events);
-
-    console.log('re');
-    this.cdRef.detectChanges();
-    console.log(this.config.resources);
-    console.log(this.scheduler.control.resources);
   }
 }

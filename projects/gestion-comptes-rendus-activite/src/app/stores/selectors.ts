@@ -11,10 +11,10 @@ export const selectEventsByUser$ = (ressource: DayPilot.ResourceData) =>
 
 export const selectEvents$ = createSelector(
   selectUserListState$,
-  (users) => users.events
+  (users) => users.users.events
 );
 
 export const selectRessources$ = createSelector(
   selectUserListState$,
-  (users) => users.ressources
+  (users) => users.users.ressources
 );

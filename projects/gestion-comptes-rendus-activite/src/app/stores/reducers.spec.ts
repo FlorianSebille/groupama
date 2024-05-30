@@ -1,20 +1,22 @@
 import { DayPilot } from 'daypilot-pro-angular';
 
-import { load, loadFailure, loadSuccess } from './actions';
+import { loadUsers, loadUsersFailure, loadUsersSuccess } from './actions';
 import * as fromEvents from './reducers';
+import { UserModel } from './user.model';
 
 describe('Users reducers', () => {
   it('[Users API] Load', () => {
     // arrange
-    const ressources: DayPilot.ResourceData[] = [];
-    const events: DayPilot.EventData[] = [];
+    const users: UserModel = {
+      ressources: [],
+      events: [],
+    };
 
-    const action = load();
+    const action = loadUsers();
 
     const expectedState: fromEvents.UserState = {
       ...fromEvents.initialState,
-      ressources,
-      events,
+      users,
       loading: true,
     };
 
@@ -26,15 +28,16 @@ describe('Users reducers', () => {
 
   it('[Users API] Load Succes', () => {
     // arrange
-    const ressources: DayPilot.ResourceData[] = [];
-    const events: DayPilot.EventData[] = [];
+    const users: UserModel = {
+      ressources: [],
+      events: [],
+    };
 
-    const action = loadSuccess({ ressources, events });
+    const action = loadUsersSuccess({ users });
 
     const expectedState: fromEvents.UserState = {
       ...fromEvents.initialState,
-      ressources,
-      events,
+      users,
       loading: true,
     };
 
@@ -47,7 +50,7 @@ describe('Users reducers', () => {
   it('[Users API] Load Failure', () => {
     // arrange
     const error = 'error';
-    const action = loadFailure({
+    const action = loadUsersFailure({
       error,
     });
 

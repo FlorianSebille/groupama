@@ -1,16 +1,17 @@
 import { createAction, props } from '@ngrx/store';
 import { DayPilot } from 'daypilot-pro-angular';
+import { UserModel } from './user.model';
 
 export const loadRessources = createAction('[User] Load Ressources');
 
-export const load = createAction('[User] Load');
+export const loadUsers = createAction('[User] Load');
 
-export const loadSuccess = createAction(
+export const loadUsersSuccess = createAction(
   '[User] Load Success',
-  props<{ ressources: DayPilot.ResourceData[]; events: DayPilot.EventData[] }>()
+  props<{ users: UserModel }>()
 );
 
-export const loadFailure = createAction(
+export const loadUsersFailure = createAction(
   '[User] Load Failure',
   props<{ error: string }>()
 );

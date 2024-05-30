@@ -1,32 +1,33 @@
 import { createReducer, on } from '@ngrx/store';
-import { DayPilot } from 'daypilot-pro-angular';
 import {
   addEvent,
   addRessource,
   deleteEvent,
   deleteRessource,
-  load,
   loadEvents,
   loadEventsFailure,
   loadEventsSuccess,
-  loadFailure,
   loadRessources,
   loadRessourcesFailure,
   loadRessourcesSuccess,
-  loadSuccess,
+  loadUsers,
+  loadUsersFailure,
+  loadUsersSuccess,
   updateEvent,
   updateRessource,
 } from './actions';
+import { UserModel } from './user.model';
 
 export interface UserState {
-  ressources: DayPilot.ResourceData[];
-  events: DayPilot.EventData[];
+  users: UserModel;
   loading: boolean;
   error: string;
 }
 export const initialState: UserState = {
-  ressources: [],
-  events: [],
+  users: {
+    ressources: [],
+    events: [],
+  },
   loading: false,
   error: '',
 };
@@ -35,29 +36,28 @@ export const userReducer = createReducer(
 
   on(addRessource, (state, { ressource }) => ({
     ...state,
-    ressources: [...state.ressources, ressource],
+    ressources: [...state.users.ressources, ressource],
   })),
 
   on(updateRessource, (state, { ressource }) => ({
     ...state,
-    ressources: state.ressources.map((r) =>
+    ressources: state.users.ressources.map((r) =>
       r.id === ressource.id ? ressource : r
     ),
   })),
 
   on(deleteRessource, (state, { id }) => ({
     ...state,
-    ressources: state.ressources.filter((t) => t.id !== id),
+    ressources: state.users.ressources.filter((t) => t.id !== id),
   })),
 
-  on(load, (state) => ({ ...state, loading: true })),
-  on(loadSuccess, (state, { ressources, events }) => ({
+  on(loadUsers, (state) => ({ ...state, loading: true })),
+  on(loadUsersSuccess, (state, { users }) => ({
     ...state,
-    ressources,
-    events,
+    users,
     loading: true,
   })),
-  on(loadFailure, (state, { error }) => ({
+  on(loadUsersFailure, (state, { error }) => ({
     ...state,
     error,
     loading: false,
@@ -67,7 +67,7 @@ export const userReducer = createReducer(
   on(loadRessourcesSuccess, (state, { ressources }) => ({
     ...state,
     ressources,
-    events: state.events,
+    events: state.users.events,
     loading: true,
   })),
   on(loadRessourcesFailure, (state, { error }) => ({
@@ -79,7 +79,7 @@ export const userReducer = createReducer(
   on(loadEvents, (state) => ({ ...state, loading: true })),
   on(loadEventsSuccess, (state, { events }) => ({
     ...state,
-    ressources: state.ressources,
+    ressources: state.users.ressources,
     events,
     loading: true,
   })),
@@ -89,18 +89,18 @@ export const userReducer = createReducer(
     loading: false,
   })),
 
-  on(addEvent, (state, { event }) => ({
+  on(addEvent, (state, action) => ({
     ...state,
-    events: [...state.events, event],
+    events: state.users.events.concat(action.event),
   })),
 
   on(updateEvent, (state, { event }) => ({
     ...state,
-    events: state.events.map((e) => (e.id === event.id ? event : e)),
+    events: state.users.events.map((e) => (e.id === event.id ? event : e)),
   })),
 
   on(deleteEvent, (state, { id }) => ({
     ...state,
-    events: state.events.filter((e) => e.id !== id),
+    events: state.users.events.filter((e) => e.id !== id),
   }))
 );
