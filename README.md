@@ -1,5 +1,7 @@
 # Groupama
 
+## Installation
+
 - Clone the repos
 
   `$ git clone https://github.com/FlorianSebille/groupama.git`
@@ -17,6 +19,12 @@
   `$ npm run start`
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.7.
+
+# Informations
+
+La page Planning sert à visualiser et ajouter des éléments dans le comptes rendus d'activité (en cours de développement)
+
+---
 
 ## Development server
 
